@@ -175,4 +175,8 @@ void q_sort(queue_t *q)
     if (!q || q->size <= 1)
         return;
     q->head = merge_sort(q->head);
+    // Update the position of the tail
+    q->tail = q->head;
+    while (q->tail->next)
+        q->tail = q->tail->next;
 }
