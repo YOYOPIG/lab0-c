@@ -4,6 +4,7 @@
 
 #include "harness.h"
 #include "queue.h"
+#include "sort.h"
 
 /*
  * Create empty queue.
@@ -12,7 +13,7 @@
 queue_t *q_new()
 {
     queue_t *q = malloc(sizeof(queue_t));
-    if (q == NULL)
+    if (!q)
         return NULL;
     q->head = NULL;
     q->tail = NULL;
@@ -45,21 +46,21 @@ void q_free(queue_t *q)
  */
 bool q_insert_head(queue_t *q, char *s)
 {
-    if (q == NULL)
+    if (!q)
         return false;
     list_ele_t *newh;
     newh = malloc(sizeof(list_ele_t));
-    if (newh == NULL)
+    if (!newh)
         return false;
     newh->value = malloc(sizeof(char) * (strlen(s) + 1));
-    if (newh->value == NULL) {
+    if (!newh->value) {
         free(newh);
         return false;
     }
     strncpy(newh->value, s, strlen(s) + 1);
     newh->next = q->head;
     q->head = newh;
-    if (q->tail == NULL)
+    if (!q->tail)
         q->tail = newh;
     q->size++;
     return true;
@@ -74,14 +75,14 @@ bool q_insert_head(queue_t *q, char *s)
  */
 bool q_insert_tail(queue_t *q, char *s)
 {
-    if (q == NULL)
+    if (!q)
         return false;
     list_ele_t *node;
     node = malloc(sizeof(list_ele_t));
-    if (node == NULL)
+    if (!node)
         return false;
     node->value = malloc(sizeof(char) * (strlen(s) + 1));
-    if (node->value == NULL) {
+    if (!node->value) {
         free(node);
         return false;
     }
@@ -109,9 +110,7 @@ bool q_insert_tail(queue_t *q, char *s)
  */
 bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
 {
-    if (q == NULL)
-        return false;
-    if (q->size == 0)
+    if (!q || !q->size)
         return false;
     if (sp) {
         if (strlen(q->head->value) > bufsize - 1) {
@@ -125,6 +124,7 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
     q->head = q->head->next;
     free(old->value);
     free(old);
+    q->size--;
     return true;
 }
 
@@ -134,7 +134,7 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
  */
 int q_size(queue_t *q)
 {
-    if (q == NULL || q->size == 0)
+    if (!q)
         return 0;
     return q->size;
 }
@@ -148,7 +148,7 @@ int q_size(queue_t *q)
  */
 void q_reverse(queue_t *q)
 {
-    if (q == NULL || q->size == 0)
+    if (!q || q->size <= 1)
         return;
     list_ele_t *cur = q->head;
     list_ele_t *next = cur->next;
@@ -172,6 +172,7 @@ void q_reverse(queue_t *q)
  */
 void q_sort(queue_t *q)
 {
-    /* TODO: You need to write the code for this function */
-    /* TODO: Remove the above comment when you are about to implement. */
+    if (!q || q->size <= 1)
+        return;
+    q->head = merge_sort(q->head);
 }
