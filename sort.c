@@ -60,3 +60,18 @@ list_ele_t *merge(list_ele_t *first, list_ele_t *second)
     cur->next = (first) ? first : second;
     return ordered;
 }
+
+list_ele_t *trie_sort(list_ele_t *head)
+{
+    if (!head || !head->next)
+        return head;
+    trie_node *root = trie_new();
+    list_ele_t *cur = head;
+    while (cur) {
+        list_ele_t *tmp = cur->next;
+        insert_element(root, cur);
+        cur = tmp;
+    }
+
+    return retrieve_sorted(root);
+}

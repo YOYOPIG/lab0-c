@@ -5,6 +5,9 @@
 #include "harness.h"
 #include "queue.h"
 #include "sort.h"
+#include "trie.h"
+
+#define SORTALG 1
 
 /*
  * Create empty queue.
@@ -176,7 +179,19 @@ void q_sort(queue_t *q)
 {
     if (!q || q->size <= 1)
         return;
-    q->head = merge_sort(q->head);
+    switch (SORTALG) {
+    case 1:
+        q->head = merge_sort(q->head);
+        break;
+
+    case 2:
+        q->head = trie_sort(q->head);
+        break;
+
+    default:
+        q->head = merge_sort(q->head);
+        break;
+    }
     // Update the position of the tail
     q->tail = q->head;
     while (q->tail->next)

@@ -36,7 +36,7 @@ $(GIT_HOOKS):
 
 OBJS := qtest.o report.o console.o harness.o queue.o \
         random.o dudect/constant.o dudect/fixture.o dudect/ttest.o \
-        linenoise.o sort.o
+        linenoise.o sort.o trie.o
 
 deps := $(OBJS:%.o=.%.o.d)
 
