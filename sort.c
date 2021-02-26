@@ -30,18 +30,33 @@ list_ele_t *merge_sort(list_ele_t *head)
 
 list_ele_t *merge(list_ele_t *first, list_ele_t *second)
 {
-    // Edge case : only one part remaining
-    if (!first)
-        return second;
-    if (!second)
-        return first;
     list_ele_t *ordered = NULL;
-    if (strcmp(first->value, second->value) < 0) {
-        ordered = first;
-        ordered->next = merge(first->next, second);
-    } else {
-        ordered = second;
-        ordered->next = merge(first, second->next);
+    list_ele_t *cur = NULL;
+
+    while (first && second) {
+        list_ele_t *tmp;
+
+        // Acquire the smallest element
+        if (strcmp(first->value, second->value) < 0) {
+            tmp = first;
+            first = first->next;
+            tmp->next = NULL;
+        } else {
+            tmp = second;
+            second = second->next;
+            tmp->next = NULL;
+        }
+
+        // Append it to ordered list
+        if (!ordered) {
+            ordered = tmp;
+            cur = tmp;
+        } else {
+            cur->next = tmp;
+            cur = cur->next;
+        }
     }
+    // Append the only remaining list to back
+    cur->next = (first) ? first : second;
     return ordered;
 }
