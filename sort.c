@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "sort.h"
@@ -75,3 +77,116 @@ list_ele_t *trie_sort(list_ele_t *head)
 
     return retrieve_sorted(root);
 }
+
+
+
+int get_max_length(list_ele_t *head, int n)
+{
+    list_ele_t *cur = head;
+    int max = strlen(cur->value);
+    while (cur->next) {
+        if (strlen(cur->value) > max)
+            max = strlen(cur->value);
+        cur = cur->next;
+    }
+    return max;
+}
+
+void counting_sort(list_ele_t *head, int size, int k, int max)
+{
+    char **tmp = NULL;
+    list_ele_t **nodes = NULL;
+    list_ele_t *cur = head;
+    tmp = malloc(sizeof(char *) * size);
+    nodes = malloc(sizeof(list_ele_t *) * size);
+    for (int i = 0; i < size; ++i) {
+        tmp[i] = malloc(sizeof(char) * max);
+        nodes[i] = malloc(sizeof(list_ele_t));
+    }
+    int count[257];  // Support 256 ASCII code. Change this according to the
+                     // data
+
+    for (int i = 0; i < 257; i++) {
+        count[i] = 0;
+    }
+    for (int i = 0; i < size; i++) {
+        // printf("%\n", nodes[i]->value); ///bug
+        nodes[i] = cur;
+        if (k < strlen(cur->value))
+            count[(int) (unsigned char) cur->value[k] + 1]++;
+        else
+            count[0]++;
+        cur = cur->next;
+    }
+
+    for (int f = 1; f < 257; f++) {
+        count[f] += count[f - 1];
+    }
+
+    for (int i = size - 1; i >= 0; i--) {
+        // printf("%s\n", nodes[i]->value);
+        if (k < strlen(nodes[i]->value)) {
+            tmp[count[(int) (unsigned char) nodes[i]->value[k] + 1] - 1] =
+                nodes[i]->value;
+            count[(int) (unsigned char) nodes[i]->value[k] + 1]--;
+        } else {
+            tmp[count[0] - 1] = nodes[i]->value;
+            count[0]--;
+        }
+    }
+
+    for (int i = 0; i < size; ++i) {
+        nodes[i]->value = tmp[i];
+    }
+    //  printf("yee\n");
+    free(tmp);
+}
+
+
+void radix_sort(queue_t *q)
+{
+    int max = get_max_length(q->head, q->size);
+
+    for (int digit = max; digit > 0;
+         digit--) {  // size_t is unsigned, so avoid using digit >= 0, which is
+                     // always true
+        counting_sort(q->head, q->size, digit - 1, max);
+        // list_ele_t *cur = q->head;
+        // while(cur)
+        // {
+        //     printf("%s ", cur->value);
+        //     cur = cur->next;
+        // }
+        // printf("\n");
+    }
+}
+
+// int main(void) {
+//     char *data[] = {
+//         "aaaba",
+//         "dfjasdlifjai",
+//         "jiifjeogiejogp",
+//         "aabaaaa",
+//         "gsgj",
+//         "gerph",
+//         "aaaaaaa",
+//         "htjltjlrth",
+//         "joasdjfisdjfdo",
+//         "hthe",
+//         "aaaaaba",
+//         "jrykpjl",
+//         "hkoptjltp",
+//         "aaaaaa",
+//         "lprrjt"
+//     };
+//     puts("before sorting:");
+//     for (int i = 0; i < sizeof(data) / sizeof(data[0]); i++) {
+//         printf("    %s\n", data[i]);
+//     }
+//     radix_sort(data, (int)(sizeof(data) / sizeof(data[0])));
+//     puts("after sorting:");
+//     for (int i = 0; i < sizeof(data) / sizeof(data[0]); i++) {
+//         printf("    %s\n", data[i]);
+//     }
+//     return 0;
+// }

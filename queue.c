@@ -7,7 +7,7 @@
 #include "sort.h"
 #include "trie.h"
 
-#define SORTALG 1
+#define SORTALG 3
 
 /*
  * Create empty queue.
@@ -187,7 +187,9 @@ void q_sort(queue_t *q)
     case 2:
         q->head = trie_sort(q->head);
         break;
-
+    case 3:
+        radix_sort(q);
+        break;
     default:
         q->head = merge_sort(q->head);
         break;
