@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "harness.h"
 #include "queue.h"
 #include "sort.h"
 #include "trie.h"
 
-#define SORTALG 3
+#define SORTALG 1
 
 /*
  * Create empty queue.
@@ -179,11 +180,11 @@ void q_sort(queue_t *q)
 {
     if (!q || q->size <= 1)
         return;
+    clock_t begin = clock();
     switch (SORTALG) {
     case 1:
         q->head = merge_sort(q->head);
         break;
-
     case 2:
         q->head = trie_sort(q->head);
         break;
@@ -194,6 +195,10 @@ void q_sort(queue_t *q)
         q->head = merge_sort(q->head);
         break;
     }
+    clock_t end = clock();
+    double time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
+    printf("%f\n", time_spent);
+
     // Update the position of the tail
     q->tail = q->head;
     while (q->tail->next)
